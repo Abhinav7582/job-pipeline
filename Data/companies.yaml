@@ -31,3 +31,31 @@ companies:
   - name: Robinhood
     ats: greenhouse
     token: robinhood
+
+  - name: Plaid
+    ats: lever
+    token: plaid
+
+  - name: Netflix
+    ats: lever
+    token: netflix
+
+  - name: Binance
+    ats: lever
+    token: binance
+
+  - name: Lever Demo
+    ats: lever
+    token: leverdemo
+  - name: "Shakepay"
+    ats: greenhouse
+    token: shakepay
+  - name: "sFOX"
+    ats: greenhouse
+    token: sfox
+  - name: "Serotonin"
+    ats: lever
+    token: serotonin
+  - name: "Linear · ashby"
+    ats: ashby
+    token: linear
