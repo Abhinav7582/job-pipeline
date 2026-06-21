@@ -172,9 +172,121 @@ companies:
     ats: greenhouse
     token: intercom
 
+  - name: YipitData
+    ats: greenhouse
+    token: yipitdata
+
+  - name: GLG
+    ats: greenhouse
+    token: gersonlehrmangroup
+
+  - name: WPP Media
+    ats: greenhouse
+    token: wppmedia
+
+  - name: Agoda
+    ats: greenhouse
+    token: agoda
+
+  - name: Ethos Life
+    ats: greenhouse
+    token: ethoslife
+
+  - name: Abacus Insights
+    ats: greenhouse
+    token: abacusinsights
+
+  - name: AiDASH
+    ats: greenhouse
+    token: aidashinc
+
+  - name: Xometry
+    ats: greenhouse
+    token: xometry
+
+  - name: Alpaca
+    ats: greenhouse
+    token: alpaca
+
+  - name: Taboola
+    ats: greenhouse
+    token: taboola
+
+  - name: Netradyne
+    ats: greenhouse
+    token: netradyne
+
+  - name: Thoughtworks
+    ats: greenhouse
+    token: thoughtworks
+
+  - name: DigiCert
+    ats: greenhouse
+    token: digicert
+
+  - name: Rubrik
+    ats: greenhouse
+    token: rubrik
+
+  - name: Zenoti
+    ats: greenhouse
+    token: zenoti
+
+  - name: Fingerprint
+    ats: greenhouse
+    token: fingerprint
+
+  - name: SeatGeek
+    ats: greenhouse
+    token: seatgeek
+
+  - name: Hudson River Trading
+    ats: greenhouse
+    token: wehrtyou
+
   - name: Spotify
     ats: lever
     token: spotify
+
+  - name: Hevo Data
+    ats: lever
+    token: hevodata
+
+  - name: Brillio
+    ats: lever
+    token: brillio-2
+
+  - name: Veeva Systems
+    ats: lever
+    token: veeva
+
+  - name: Netomi
+    ats: lever
+    token: netomi
+
+  - name: Meesho
+    ats: lever
+    token: meesho
+
+  - name: Neuron7
+    ats: lever
+    token: neuron7
+
+  - name: HighLevel
+    ats: lever
+    token: gohighlevel
+
+  - name: Tala
+    ats: lever
+    token: tala
+
+  - name: UpGuard
+    ats: lever
+    token: upguard
+
+  - name: ShopBack
+    ats: lever
+    token: shopback-2
 
   - name: Notion
     ats: ashby
@@ -243,156 +355,95 @@ companies:
   - name: Modern Treasury
     ats: ashby
     token: moderntreasury
-  - name: "YipitData"
-    ats: greenhouse
-    token: yipitdata
-  - name: "GLG"
-    ats: greenhouse
-    token: gersonlehrmangroup
-  - name: "WPP Media"
-    ats: greenhouse
-    token: wppmedia
-  - name: "Agoda"
-    ats: greenhouse
-    token: agoda
-  - name: "Ethos Life"
-    ats: greenhouse
-    token: ethoslife
-  - name: "Abacus Insights"
-    ats: greenhouse
-    token: abacusinsights
-  - name: "AiDASH"
-    ats: greenhouse
-    token: aidashinc
-  - name: "Xometry"
-    ats: greenhouse
-    token: xometry
-  - name: "Alpaca"
-    ats: greenhouse
-    token: alpaca
-  - name: "Taboola"
-    ats: greenhouse
-    token: taboola
-  - name: "Netradyne"
-    ats: greenhouse
-    token: netradyne
-  - name: "Thoughtworks"
-    ats: greenhouse
-    token: thoughtworks
-  - name: "DigiCert"
-    ats: greenhouse
-    token: digicert
-  - name: "Rubrik"
-    ats: greenhouse
-    token: rubrik
-  - name: "Zenoti"
-    ats: greenhouse
-    token: zenoti
-  - name: "Fingerprint"
-    ats: greenhouse
-    token: fingerprint
-  - name: "SeatGeek"
-    ats: greenhouse
-    token: seatgeek
-  - name: "Hudson River Trading"
-    ats: greenhouse
-    token: wehrtyou
-  - name: "Hevo Data"
-    ats: lever
-    token: hevodata
-  - name: "Brillio"
-    ats: lever
-    token: brillio-2
-  - name: "Veeva Systems"
-    ats: lever
-    token: veeva
-  - name: "Netomi"
-    ats: lever
-    token: netomi
-  - name: "Meesho"
-    ats: lever
-    token: meesho
-  - name: "Neuron7"
-    ats: lever
-    token: neuron7
-  - name: "HighLevel"
-    ats: lever
-    token: gohighlevel
-  - name: "Tala"
-    ats: lever
-    token: tala
-  - name: "UpGuard"
-    ats: lever
-    token: upguard
-  - name: "ShopBack"
-    ats: lever
-    token: shopback-2
-  - name: "ClickUp"
+
+  - name: ClickUp
     ats: ashby
     token: clickup
-  - name: "Sarvam"
+
+  - name: Sarvam
     ats: ashby
     token: sarvam
-  - name: "UptimeAI"
+
+  - name: UptimeAI
     ats: ashby
     token: uptimeai
-  - name: "Tilt Finance"
+
+  - name: Tilt Finance
     ats: ashby
     token: tilthq
-  - name: "GPTZero"
+
+  - name: GPTZero
     ats: ashby
     token: gptzero
-  - name: "SentiLink"
+
+  - name: SentiLink
     ats: ashby
     token: sentilink
-  - name: "Anyscale"
+
+  - name: Anyscale
     ats: ashby
     token: anyscale
-  - name: "G2"
+
+  - name: G2
     ats: ashby
     token: g2
-  - name: "Rox Data Corp"
+
+  - name: Rox Data Corp
     ats: ashby
     token: Rox-Data-Corp
-  - name: "Riveron"
+
+  - name: Riveron
     ats: ashby
     token: riveron
-  - name: "OpenGov"
+
+  - name: OpenGov
     ats: ashby
     token: opengov
-  - name: "Gradera"
+
+  - name: Gradera
     ats: ashby
     token: gradera
-  - name: "Smallest.ai"
+
+  - name: Smallest.ai
     ats: ashby
     token: smallest
-  - name: "LG Ad Solutions"
+
+  - name: LG Ad Solutions
     ats: ashby
     token: lgads
-  - name: "Allica Bank"
+
+  - name: Allica Bank
     ats: ashby
     token: allica-bank
-  - name: "Darkroom"
+
+  - name: Darkroom
     ats: ashby
     token: darkroom
-  - name: "AHL Saaf AI"
+
+  - name: AHL Saaf AI
     ats: ashby
     token: AHL-SaafAI
-  - name: "Deliveroo"
+
+  - name: Deliveroo
     ats: ashby
     token: deliveroo
-  - name: "adjoe"
+
+  - name: adjoe
     ats: ashby
     token: adjoe
-  - name: "Venatus"
+
+  - name: Venatus
     ats: ashby
     token: venatus.com
-  - name: "Nexxen"
+
+  - name: Nexxen
     ats: ashby
     token: nexxen
-  - name: "Lyric"
+
+  - name: Lyric
     ats: ashby
     token: lyric
-  - name: "Cygnify"
+
+  - name: Cygnify
     ats: ashby
     token: cygnify

@@ -5,8 +5,8 @@ Feed it a file of careers-board URLs (one per line). It detects the ATS and
 token from each URL, skips anything already in companies.yaml, and appends the
 rest — so you can fatten the company list by pasting, not typing.
 
-    python -m jobpipeline.import_companies my_list.txt
-    python -m jobpipeline.import_companies my_list.txt --check
+    python -m jobspipeline.import_companies my_list.txt
+    python -m jobspipeline.import_companies my_list.txt --check
 
 --check verifies each board actually returns jobs (using the adapters we have)
 before adding it, so moved/empty boards like a dead Lever account get dropped
@@ -143,7 +143,7 @@ def main(argv: list[str]) -> None:
     args = [a for a in argv if not a.startswith("--")]
     check = "--check" in argv
     if not args:
-        print("usage: python -m jobpipeline.import_companies <file> [--check]")
+        print("usage: python -m jobspipeline.import_companies <file> [--check]")
         return
 
     in_path = Path(args[0])

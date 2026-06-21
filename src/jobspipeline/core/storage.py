@@ -23,7 +23,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 from ..schemas import Job
 
-# jobs.db lives at the project root (storage.py is at src/jobpipeline/core/)
+# jobs.db lives at the project root (storage.py is at src/jobspipeline/core/)
 DB_PATH = Path(__file__).resolve().parents[3] / "jobs.db"
 engine = create_engine(f"sqlite:///{DB_PATH}")
 

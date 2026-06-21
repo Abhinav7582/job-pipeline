@@ -159,7 +159,7 @@ def _normalize(s: str) -> str:
 
 
 # --------------------------------------------------------------------------- #
-# Quick smoke test:  python -m jobpipeline.schemas                             #
+# Quick smoke test:  python -m jobspipeline.schemas                             #
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
     job = Job(
