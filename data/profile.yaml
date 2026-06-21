@@ -1,0 +1,85 @@
+# Your master profile — what every job gets scored against.
+# Edit freely; no code changes needed. The scorer uses the "hard filters" to
+# cheaply drop bad matches, then an LLM scores what's left using everything else.
+
+name: Abhinav Singh
+
+summary: >
+  Data analyst with ~3 years turning ambiguous business problems into scalable
+  analytics and production data pipelines, with deep AdTech / programmatic
+  advertising domain expertise. Looking for senior data analyst or data
+  scientist roles where I own analysis end to end and build data products —
+  ideally in AdTech, data infrastructure, or analytics-heavy product teams.
+
+target_titles:
+  - Senior Data Analyst
+  - Data Scientist
+  - Analytics Engineer
+  - Data Analyst
+  - Business Analyst
+  - Product Analyst
+  - Decision Scientist
+  - Machine Learning Engineer
+  - Data Engineer
+  - Business Intelligence Engineer
+  - BI Analyst
+  - Growth Analyst
+  - Marketing Analyst
+  - Revenue Analyst
+  - Risk Analyst
+  - Fraud Analyst
+  
+skills:
+  - SQL
+  - Python
+  - pandas
+  - PySpark
+  - Databricks
+  - Power BI
+  - Tableau
+  - Sigma
+  - data pipeline automation
+  - BI and reporting
+
+domains:
+  - AdTech
+  - programmatic advertising
+  - DSP integrations
+  - data infrastructure
+
+nice_to_haves:
+  - machine learning / predictive modeling
+  - product analytics
+  - high-growth or startup environment
+
+# ---- hard filters: applied before any LLM call ----
+
+# acceptable seniority bands (enum values: intern, entry, mid, senior, lead,
+# principal, director, executive)
+seniority:
+  - mid
+  - senior
+
+# a job's location must contain one of these strings (case-insensitive) OR be
+# remote (if "remote" is in remote_ok below)
+locations:
+  - Bengaluru
+  - Bangalore
+  - India
+
+# acceptable work arrangements (enum values: remote, hybrid, on_site)
+remote_ok:
+  - remote
+  - hybrid
+  - on_site
+
+employment_types:
+  - full_time
+
+# drop any posting whose title/description contains one of these
+dealbreaker_keywords:
+  - intern
+  - unpaid
+
+min_salary: null
+currency: null
