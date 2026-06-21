@@ -1,12 +1,11 @@
 """
-The runner — ties config + adapters + schema together.
+The runner — fetch every board, normalize, dedup, and persist.
 
     python -m jobpipeline.run
 
-Loads data/companies.yaml, picks the right adapter for each company's ATS,
-fetches every board, normalizes to Job, dedups across sources, and prints
-a summary. This is the moment it stops being a schema and starts being a
-pipeline.
+Loads data/companies.yaml, runs the right adapter per company, normalizes to
+Job, dedups within the run, then stores to SQLite. The store reports how many
+postings are NEW since the last run vs already known.
 """
 
 from __future__ import annotations
@@ -15,6 +14,7 @@ from pathlib import Path
 
 import yaml
 
+from .core.storage import init_db, store_jobs
 from .schemas import Job
 from .sources.base import CompanyConfig, SourceAdapter
 from .sources.greenhouse import GreenhouseAdapter
@@ -38,20 +38,19 @@ def fetch_all() -> list[Job]:
     for company in load_companies():
         adapter_cls = ADAPTERS.get(company.ats)
         if adapter_cls is None:
-            print(f"  ⚠  {company.name:<14} no adapter for '{company.ats}' — skipping")
+            print(f"  \u26a0  {company.name:<14} no adapter for '{company.ats}' \u2014 skipping")
             continue
         try:
             found = adapter_cls(company).fetch()
-            print(f"  ✓  {company.name:<14} {len(found):>4} jobs")
+            print(f"  \u2713  {company.name:<14} {len(found):>4} jobs")
             jobs.extend(found)
         except Exception as e:
-            # One bad token shouldn't kill the whole run.
-            print(f"  ✗  {company.name:<14} failed: {e}")
+            print(f"  \u2717  {company.name:<14} failed: {e}")
     return jobs
 
 
 def dedup(jobs: list[Job]) -> list[Job]:
-    """Collapse the same role seen from multiple sources via its dedup_key."""
+    """Collapse the same role seen multiple times within this run."""
     seen: dict[str, Job] = {}
     for job in jobs:
         seen.setdefault(job.dedup_key, job)
@@ -59,18 +58,18 @@ def dedup(jobs: list[Job]) -> list[Job]:
 
 
 def main() -> None:
-    print("Fetching boards…")
+    init_db()
+
+    print("Fetching boards\u2026")
     jobs = fetch_all()
     unique = dedup(jobs)
+    result = store_jobs(unique)
 
-    print(f"\nTotal: {len(jobs)} jobs  →  {len(unique)} after dedup")
-    if unique:
-        s = unique[0]
-        loc = s.locations[0].raw if s.locations else "—"
-        print("\nSample posting:")
-        print(f"  {s.title}  @  {s.company}")
-        print(f"  seniority: {s.seniority.value}   location: {loc}")
-        print(f"  apply: {s.apply_url}")
+    print(f"\nFetched {len(jobs)}  \u2192  {len(unique)} unique this run")
+    print(
+        f"DB: +{result.new} new, {result.seen} already known"
+        f"  \u2192  {result.total} jobs stored total"
+    )
 
 
 if __name__ == "__main__":
