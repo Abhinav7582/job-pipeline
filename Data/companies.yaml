@@ -1,0 +1,33 @@
+# The source list. Each entry says: this company, on this ATS, with this token.
+#
+# For Greenhouse, `token` is the slug in the careers URL:
+#   https://boards.greenhouse.io/<token>   ->  token is the last path part.
+# To add a company: open its careers page, look at the URL, copy the slug.
+#
+# Build this list ATS-FIRST: prioritise companies on Greenhouse / Lever / Ashby
+# (clean public APIs). Prestige names on Workday/custom systems come later.
+
+companies:
+  - name: Stripe
+    ats: greenhouse
+    token: stripe
+
+  - name: Airbnb
+    ats: greenhouse
+    token: airbnb
+
+  - name: Databricks
+    ats: greenhouse
+    token: databricks
+
+  - name: Figma
+    ats: greenhouse
+    token: figma
+
+  - name: GitLab
+    ats: greenhouse
+    token: gitlab
+
+  - name: Robinhood
+    ats: greenhouse
+    token: robinhood
