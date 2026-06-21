@@ -19,11 +19,13 @@ from .schemas import Job
 from .sources.base import CompanyConfig, SourceAdapter
 from .sources.greenhouse import GreenhouseAdapter
 from .sources.lever import LeverAdapter
+from .sources.ashby import AshbyAdapter
 
 # ATS name (from companies.yaml) -> adapter class. Add a line per new source.
 ADAPTERS: dict[str, type[SourceAdapter]] = {
     "greenhouse": GreenhouseAdapter,
     "lever": LeverAdapter,
+    "ashby": AshbyAdapter,
 }
 
 # project root / data / companies.yaml  (run.py lives at src/jobpipeline/run.py)
