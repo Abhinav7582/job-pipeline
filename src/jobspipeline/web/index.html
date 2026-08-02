@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortlist — fit scoring</title>
+<style>
+  :root {
+    --bg:#0c0e14; --surface:#131722; --surface-2:#192030; --line:#232b3a;
+    --text:#e9edf5; --muted:#828b9e; --faint:#5a6172; --accent:#8aa4ff;
+    --strong:#46d19e; --good:#ecc158; --weak:#6a7283;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sans); font-size:15px; line-height:1.5;
+  }
+  .num, .stat b, .fit .n, .g-count { font-variant-numeric:tabular-nums; font-family:var(--mono); }
+  a { color:inherit; }
+  .wrap { max-width:1020px; margin:0 auto; padding:0 20px 80px; }
+
+  /* ---- masthead ---- */
+  .top { padding:34px 0 20px; border-bottom:1px solid var(--line); }
+  .eyebrow {
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 8px;
+  }
+  h1 { margin:0; font-size:26px; font-weight:600; letter-spacing:-.01em; }
+  h1 .thin { color:var(--muted); font-weight:400; }
+
+  .readout {
+    display:flex; gap:34px; margin-top:22px; flex-wrap:wrap;
+  }
+  .stat { display:flex; flex-direction:column; gap:2px; }
+  .stat b { font-size:26px; font-weight:600; line-height:1; }
+  .stat span {
+    font-family:var(--mono); font-size:10px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--faint);
+  }
+  .stat.hi b { color:var(--strong); }
+
+  /* ---- controls ---- */
+  .bar-controls {
+    position:sticky; top:0; z-index:5; background:var(--bg);
+    padding:16px 0; margin-bottom:8px; border-bottom:1px solid var(--line);
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .field {
+    background:var(--surface); color:var(--text); border:1px solid var(--line);
+    border-radius:8px; padding:9px 12px; font-size:14px; font-family:var(--sans);
+    outline:none;
+  }
+  .field:focus-visible { border-color:var(--accent); box-shadow:0 0 0 3px rgba(138,164,255,.15); }
+  #q { flex:1; min-width:180px; }
+  select.field { cursor:pointer; }
+  .slider { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px;
+    font-family:var(--mono); letter-spacing:.04em; text-transform:uppercase; }
+  .slider input { accent-color:var(--accent); }
+  .slider output { color:var(--text); min-width:20px; text-align:right; }
+  .shown { margin-left:auto; color:var(--faint); font-family:var(--mono); font-size:12px; }
+
+  /* ---- tier groups ---- */
+  .group { display:flex; align-items:baseline; gap:10px; margin:26px 0 10px; }
+  .g-name { font-size:13px; font-weight:600; letter-spacing:.02em; }
+  .g-rule { flex:1; height:1px; background:var(--line); }
+  .g-count { font-family:var(--mono); font-size:12px; color:var(--faint); }
+  .group.t-strong .g-name { color:var(--strong); }
+  .group.t-good   .g-name { color:var(--good); }
+  .group.t-weak   .g-name { color:var(--weak); }
+
+  /* ---- rows ---- */
+  .row {
+    display:flex; gap:18px; align-items:center; padding:14px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:hover { background:var(--surface); }
+  .fit { flex:0 0 58px; text-align:right; }
+  .fit .n { font-size:23px; font-weight:600; line-height:1; }
+  .fit .track { height:3px; margin-top:7px; border-radius:2px; background:var(--line); overflow:hidden; }
+  .fit .track i { display:block; height:100%; border-radius:2px; }
+  .t-strong .n, .t-strong .track i { color:var(--strong); background:var(--strong); }
+  .t-good   .n { color:var(--good); }   .t-good .track i { background:var(--good); }
+  .t-weak   .n { color:var(--weak); }   .t-weak .track i { background:var(--weak); }
+
+  .body { flex:1; min-width:0; }
+  .title { font-weight:600; font-size:15px; }
+  .meta { color:var(--muted); font-size:13px; margin:2px 0 5px; font-family:var(--mono); letter-spacing:.01em; }
+  .reason { color:#aeb5c4; font-size:13px; }
+  .apply {
+    flex:0 0 auto; font-size:12px; font-weight:600; font-family:var(--mono);
+    letter-spacing:.06em; text-transform:uppercase; text-decoration:none;
+    color:var(--accent); border:1px solid var(--line); background:var(--surface);
+    border-radius:8px; padding:9px 14px; white-space:nowrap;
+  }
+  .apply:hover { border-color:var(--accent); background:var(--surface-2); }
+  .apply:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+  .empty { color:var(--muted); text-align:center; padding:56px 0; }
+  .empty b { color:var(--text); font-weight:600; }
+  footer { margin-top:34px; color:var(--faint); font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; }
+
+  @media (max-width:560px) {
+    .readout { gap:22px; }
+    .apply { padding:8px 10px; }
+    .row { gap:12px; }
+  }
+  @media (prefers-reduced-motion:no-preference) {
+    .row { animation:rise .3s ease both; }
+    @keyframes rise { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">Fit scoring · live from jobs.db</p>
+    <h1>Your matches, <span class="thin">ranked by fit</span></h1>
+    <div class="readout" id="readout"></div>
+  </header>
+
+  <div class="bar-controls">
+    <input id="q" class="field" type="text" placeholder="Search title or company" autocomplete="off">
+    <select id="src" class="field"><option value="">All sources</option></select>
+    <select id="sort" class="field">
+      <option value="score">Sort: fit</option>
+      <option value="company">Sort: company</option>
+      <option value="title">Sort: title</option>
+    </select>
+    <label class="slider">min <input id="min" type="range" min="0" max="100" step="5" value="0"><output id="minOut">0</output></label>
+    <span class="shown" id="shown"></span>
+  </div>
+
+  <div id="list"></div>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+  let ALL = [];
+  const el = id => document.getElementById(id);
+  const esc = t => (t ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+  const tierOf = s => s >= 75 ? "strong" : s >= 55 ? "good" : "weak";
+  const TIERS = [
+    { key:"strong", name:"Strong",       note:"75+"   },
+    { key:"good",   name:"Worth a look", note:"55\u201374" },
+    { key:"weak",   name:"Long shots",   note:"<55"   },
+  ];
+
+  function median(nums){
+    if(!nums.length) return 0;
+    const a=[...nums].sort((x,y)=>x-y), m=a.length>>1;
+    return a.length%2 ? a[m] : Math.round((a[m-1]+a[m])/2);
+  }
+
+  function drawReadout(){
+    const scores = ALL.map(t=>t.score);
+    const strong = scores.filter(s=>s>=75).length;
+    const top = scores.length ? Math.max(...scores) : 0;
+    const med = median(scores);
+    el("readout").innerHTML = `
+      <div class="stat"><b>${ALL.length}</b><span>Scored</span></div>
+      <div class="stat hi"><b>${strong}</b><span>Strong</span></div>
+      <div class="stat"><b>${top}</b><span>Top fit</span></div>
+      <div class="stat"><b>${med}</b><span>Median</span></div>`;
+  }
+
+  function rowHTML(t){
+    const cls = "t-" + tierOf(t.score);
+    return `<div class="row ${cls}">
+      <div class="fit">
+        <div class="n">${t.score}</div>
+        <div class="track"><i style="width:${Math.max(4,t.score)}%"></i></div>
+      </div>
+      <div class="body">
+        <div class="title">${esc(t.title)}</div>
+        <div class="meta">${esc(t.company)}${t.location ? " · " + esc(t.location) : ""} · ${esc(t.source)}</div>
+        <div class="reason">${esc(t.reasons)}</div>
+      </div>
+      ${t.apply_url ? `<a class="apply" href="${esc(t.apply_url)}" target="_blank" rel="noopener">Apply</a>` : ""}
+    </div>`;
+  }
+
+  function render(){
+    const q = el("q").value.trim().toLowerCase();
+    const min = +el("min").value;
+    const src = el("src").value;
+    const sort = el("sort").value;
+
+    let rows = ALL.filter(t =>
+      t.score >= min &&
+      (!src || t.source === src) &&
+      (!q || (t.title + " " + t.company).toLowerCase().includes(q)));
+
+    if (sort === "company") rows.sort((a,b)=> a.company.localeCompare(b.company) || b.score-a.score);
+    else if (sort === "title") rows.sort((a,b)=> a.title.localeCompare(b.title));
+    else rows.sort((a,b)=> b.score-a.score);
+
+    el("shown").textContent = `${rows.length} / ${ALL.length}`;
+
+    if (!rows.length){
+      el("list").innerHTML = `<div class="empty"><b>Nothing here yet.</b><br>Loosen the filters, or score more jobs to fill the shortlist.</div>`;
+      return;
+    }
+
+    if (sort === "score"){
+      el("list").innerHTML = TIERS.map(g => {
+        const items = rows.filter(t => tierOf(t.score) === g.key);
+        if (!items.length) return "";
+        return `<div class="group t-${g.key}">
+                  <span class="g-name">${g.name}</span><div class="g-rule"></div>
+                  <span class="g-count">${g.note} · ${items.length}</span>
+                </div>` + items.map(rowHTML).join("");
+      }).join("");
+    } else {
+      el("list").innerHTML = rows.map(rowHTML).join("");
+    }
+  }
+
+  async function load(){
+    const res = await fetch("/api/targets");
+    ALL = await res.json();
+    const sources = [...new Set(ALL.map(t=>t.source).filter(Boolean))].sort();
+    el("src").innerHTML = '<option value="">All sources</option>' +
+      sources.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    el("foot").textContent = `Reads live from jobs.db — rescore anytime and refresh.`;
+    drawReadout();
+    render();
+  }
+
+  el("q").addEventListener("input", render);
+  el("src").addEventListener("change", render);
+  el("sort").addEventListener("change", render);
+  el("min").addEventListener("input", ()=>{ el("minOut").textContent = el("min").value; render(); });
+
+  load();
+</script>
+</body>
+</html>
