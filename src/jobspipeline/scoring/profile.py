@@ -2,10 +2,11 @@
 The master profile — what the scoring engine measures every job against.
 
 It serves both stages of the hybrid scorer:
-  - the HARD-FILTER fields (seniority, locations, remote_ok, employment_types,
-    dealbreaker_keywords) cheaply cut the firehose down before any LLM call
-  - the SOFT fields (summary, skills, domains, nice_to_haves) give the LLM the
-    nuance it needs to score and explain the survivors
+  - the HARD-FILTER fields (role_keywords, seniority, locations, remote_ok,
+    employment_types, dealbreaker_keywords) cheaply cut the firehose down before
+    any LLM call
+  - the SOFT fields (summary, skills, domains, nice_to_haves, years_experience)
+    give the LLM the nuance it needs to score and explain the survivors
 
 Edit data/profile.yaml to change any of this — no code changes needed.
 """
@@ -27,12 +28,16 @@ class Profile(BaseModel):
     # --- identity + freeform (the LLM scorer reads these for nuance) ---
     name: str
     summary: str                       # 2-4 sentences: who you are + ideal role
+    years_experience: int = 0          # used by the scorer to weigh seniority fit
     target_titles: list[str]
     skills: list[str] = Field(default_factory=list)
     domains: list[str] = Field(default_factory=list)
     nice_to_haves: list[str] = Field(default_factory=list)
 
     # --- hard filters (applied before the expensive LLM scoring) ---
+    # a job's TITLE must contain at least one of these to survive (positive
+    # relevance gate — keeps data roles, drops legal/sales/eng/etc.)
+    role_keywords: list[str] = Field(default_factory=list)
     seniority: list[Seniority] = Field(default_factory=list)
     locations: list[str] = Field(default_factory=list)        # substring match
     remote_ok: list[RemoteType] = Field(default_factory=list)
@@ -51,9 +56,8 @@ def load_profile(path: Path = PROFILE_PATH) -> Profile:
 
 if __name__ == "__main__":
     p = load_profile()
-    print(f"Loaded profile for {p.name}")
+    print(f"Loaded profile for {p.name} ({p.years_experience} yrs experience)")
     print(f"  targets:   {', '.join(p.target_titles)}")
+    print(f"  role keywords: {p.role_keywords}")
     print(f"  seniority: {[s.value for s in p.seniority]}")
-    print(f"  remote ok: {[r.value for r in p.remote_ok]}")
     print(f"  skills:    {len(p.skills)} listed")
-    print(f"  dealbreakers: {p.dealbreaker_keywords}")

@@ -4,94 +4,105 @@
 
 name: Abhinav Singh
 
+years_experience: 3
+
 summary: >
-  Data analyst with ~3 years turning ambiguous business problems into scalable
-  analytics, BI automation, and production data pipelines, with deep AdTech /
-  programmatic advertising domain expertise. Experienced in SQL, Python, PySpark,
-  Databricks, Power BI, Tableau, Sigma, dashboarding, KPI definition, revenue
-  diagnostics, data quality checks, and stakeholder-facing analytics. Looking for
-  data analyst, senior data analyst, product analyst, analytics engineer, data
-  scientist, BI analyst, or analytics-heavy data roles where I can own analysis
-  end to end, build reliable data products, and improve business decision-making
-  — ideally in AdTech, data infrastructure, fintech, SaaS, marketplace, or
-  analytics-heavy product teams.
+  Senior data analyst and data engineer with 3 years building production data
+  pipelines, analytical products, and applied ML across AdTech and e-commerce.
+  Strong in SQL, Python, PySpark, Databricks, and Snowflake, with experience
+  processing billion-scale data, strengthening data quality, automating recurring
+  workflows, and turning customer and revenue signals into product decisions.
+  Track record of scalable systems with measurable gains in revenue, conversion,
+  and operational efficiency — from DSP discrepancy and SSP monetization pipelines
+  to recommendation engines, churn models, and pricing analysis. Looking for
+  senior data analyst, data engineer, analytics engineer, or data scientist roles
+  in AdTech, data infrastructure, or analytics-heavy product teams where I own
+  analysis and pipelines end to end.
 
 target_titles:
   - Senior Data Analyst
   - Data Analyst
-  - Product Analyst
-  - Business Analyst
-  - BI Analyst
-  - Business Intelligence Analyst
+  - Data Engineer
   - Analytics Engineer
   - Data Scientist
-  - Decision Scientist
+  - Product Analyst
   - Product Data Scientist
+  - Decision Scientist
+  - Business Intelligence Analyst
+  - BI Analyst
+  - Business Analyst
   - Growth Analyst
   - Marketing Analyst
   - Revenue Analyst
   - Risk Analyst
   - Analytics Consultant
-  - Data Engineer
 
 skills:
   - SQL
-  - advanced SQL
   - Python
-  - pandas
-  - NumPy
   - PySpark
-  - Spark SQL
+  - Apache Spark
+  - Apache Hive
   - Databricks
   - Snowflake
-  - BigQuery
-  - Power BI
-  - Tableau
-  - Sigma
-  - Excel
-  - data pipeline automation
+  - Apache Airflow
+  - dbt
+  - Azure Data Lake
+  - Azure Data Factory
+  - Azure Cosmos DB
+  - AWS S3
+  - Google BigQuery
+  - MySQL
   - ETL
   - ELT
+  - workflow automation
+  - data pipeline automation
   - data modeling
+  - data quality
   - data validation
-  - data quality checks
   - reconciliation
-  - anomaly detection
-  - BI and reporting
-  - dashboarding
-  - KPI definition
-  - revenue diagnostics
-  - business reporting
-  - stakeholder management
-  - product analytics
-  - marketing analytics
-  - customer analytics
-  - churn analysis
-  - segmentation
-  - A/B testing
-  - experimentation analysis
+  - machine learning
+  - scikit-learn
+  - XGBoost
+  - classification
   - predictive modeling
-  - machine learning basics
+  - statistical modeling
+  - feature engineering
+  - NLP
+  - customer segmentation
+  - churn modeling
+  - quasi-experimental design
+  - A/B testing
+  - Power BI
+  - Tableau
+  - business intelligence
+  - KPI development
+  - dashboarding
+  - revenue diagnostics
+  - stakeholder management
+  - Git
 
 domains:
   - AdTech
   - programmatic advertising
   - DSP integrations
   - DSP reporting
+  - SSP monetization
   - campaign analytics
   - revenue analytics
   - marketing analytics
   - product analytics
   - data infrastructure
+  - data engineering
   - BI automation
-  - data observability
   - data quality monitoring
   - e-commerce analytics
+  - recommendation systems
+  - pricing analytics
+  - experimentation and causal inference
   - customer analytics
-  - subscription analytics
-  - SaaS analytics
+  - churn and retention
   - marketplace analytics
-  - fintech analytics
 
 nice_to_haves:
   - AdTech or marketing technology company
@@ -108,6 +119,16 @@ nice_to_haves:
 
 # ---- hard filters: applied before any LLM call ----
 
+# a job's TITLE must contain one of these to survive (positive relevance gate)
+role_keywords:
+  - analyst
+  - analytics
+  - data scien        # matches "data science" and "data scientist"
+  - data engineer
+  - business intelligence
+  - decision scien
+  - insights
+
 # acceptable seniority bands (enum values: intern, entry, mid, senior, lead,
 # principal, director, executive)
 seniority:
@@ -115,9 +136,7 @@ seniority:
   - senior
 
 # a job's location must contain one of these strings (case-insensitive) OR be
-# remote (if "remote" is in remote_ok below).
-# NOTE: removed bare "IN" — as a 2-char substring it false-matches Berlin,
-# Dublin, Austin, etc. Re-add only as a proper country-code match later.
+# remote (if "remote" is in remote_ok below)
 locations:
   - Bengaluru
   - Bangalore
@@ -137,12 +156,12 @@ remote_ok:
 employment_types:
   - full_time
 
-# drop any posting whose TITLE contains one of these (matched on the title only,
-# so a data role that merely mentions these in its description is kept).
+# drop any posting whose TITLE contains one of these (matched on the title only)
 dealbreaker_keywords:
   - intern
   - internship
   - unpaid
+  - contract
   - volunteer
   - campus
   - new grad
