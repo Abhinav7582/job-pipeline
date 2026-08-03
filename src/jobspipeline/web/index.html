@@ -8,93 +8,67 @@
   :root {
     --bg:#0c0e14; --surface:#131722; --surface-2:#192030; --line:#232b3a;
     --text:#e9edf5; --muted:#828b9e; --faint:#5a6172; --accent:#8aa4ff;
-    --strong:#46d19e; --good:#ecc158; --weak:#6a7283;
+    --strong:#46d19e; --good:#ecc158; --weak:#6a7283; --foreign:#f0787f;
     --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
     --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
   }
   * { box-sizing:border-box; }
-  html { -webkit-text-size-adjust:100%; }
-  body {
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:var(--sans); font-size:15px; line-height:1.5;
-  }
-  .num, .stat b, .fit .n, .g-count { font-variant-numeric:tabular-nums; font-family:var(--mono); }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.5; }
+  .num,.stat b,.fit .n,.g-count { font-variant-numeric:tabular-nums; font-family:var(--mono); }
   a { color:inherit; }
   .wrap { max-width:1020px; margin:0 auto; padding:0 20px 80px; }
 
-  /* ---- masthead ---- */
   .top { padding:34px 0 20px; border-bottom:1px solid var(--line); }
-  .eyebrow {
-    font-family:var(--mono); font-size:11px; letter-spacing:.22em;
-    text-transform:uppercase; color:var(--accent); margin:0 0 8px;
-  }
+  .eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; }
   h1 { margin:0; font-size:26px; font-weight:600; letter-spacing:-.01em; }
   h1 .thin { color:var(--muted); font-weight:400; }
-
-  .readout {
-    display:flex; gap:34px; margin-top:22px; flex-wrap:wrap;
-  }
+  .readout { display:flex; gap:34px; margin-top:22px; flex-wrap:wrap; }
   .stat { display:flex; flex-direction:column; gap:2px; }
   .stat b { font-size:26px; font-weight:600; line-height:1; }
-  .stat span {
-    font-family:var(--mono); font-size:10px; letter-spacing:.18em;
-    text-transform:uppercase; color:var(--faint);
-  }
+  .stat span { font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); }
   .stat.hi b { color:var(--strong); }
 
-  /* ---- controls ---- */
-  .bar-controls {
-    position:sticky; top:0; z-index:5; background:var(--bg);
-    padding:16px 0; margin-bottom:8px; border-bottom:1px solid var(--line);
-    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-  }
-  .field {
-    background:var(--surface); color:var(--text); border:1px solid var(--line);
-    border-radius:8px; padding:9px 12px; font-size:14px; font-family:var(--sans);
-    outline:none;
-  }
+  .bar-controls { position:sticky; top:0; z-index:5; background:var(--bg); padding:16px 0; margin-bottom:8px;
+    border-bottom:1px solid var(--line); display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .field { background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:8px;
+    padding:9px 12px; font-size:14px; font-family:var(--sans); outline:none; }
   .field:focus-visible { border-color:var(--accent); box-shadow:0 0 0 3px rgba(138,164,255,.15); }
-  #q { flex:1; min-width:180px; }
+  #q { flex:1; min-width:160px; }
   select.field { cursor:pointer; }
-  .slider { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px;
-    font-family:var(--mono); letter-spacing:.04em; text-transform:uppercase; }
+  .slider { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; font-family:var(--mono); letter-spacing:.04em; text-transform:uppercase; }
   .slider input { accent-color:var(--accent); }
   .slider output { color:var(--text); min-width:20px; text-align:right; }
   .shown { margin-left:auto; color:var(--faint); font-family:var(--mono); font-size:12px; }
 
-  /* ---- tier groups ---- */
   .group { display:flex; align-items:baseline; gap:10px; margin:26px 0 10px; }
-  .g-name { font-size:13px; font-weight:600; letter-spacing:.02em; }
+  .g-name { font-size:13px; font-weight:600; }
   .g-rule { flex:1; height:1px; background:var(--line); }
   .g-count { font-family:var(--mono); font-size:12px; color:var(--faint); }
   .group.t-strong .g-name { color:var(--strong); }
-  .group.t-good   .g-name { color:var(--good); }
-  .group.t-weak   .g-name { color:var(--weak); }
+  .group.t-good .g-name { color:var(--good); }
+  .group.t-weak .g-name { color:var(--weak); }
 
-  /* ---- rows ---- */
-  .row {
-    display:flex; gap:18px; align-items:center; padding:14px 4px;
-    border-bottom:1px solid var(--line);
-  }
+  .row { display:flex; gap:18px; align-items:center; padding:14px 4px; border-bottom:1px solid var(--line); }
   .row:hover { background:var(--surface); }
   .fit { flex:0 0 58px; text-align:right; }
   .fit .n { font-size:23px; font-weight:600; line-height:1; }
   .fit .track { height:3px; margin-top:7px; border-radius:2px; background:var(--line); overflow:hidden; }
   .fit .track i { display:block; height:100%; border-radius:2px; }
-  .t-strong .n, .t-strong .track i { color:var(--strong); background:var(--strong); }
-  .t-good   .n { color:var(--good); }   .t-good .track i { background:var(--good); }
-  .t-weak   .n { color:var(--weak); }   .t-weak .track i { background:var(--weak); }
+  .t-strong .n,.t-strong .track i { color:var(--strong); background:var(--strong); }
+  .t-good .n { color:var(--good); } .t-good .track i { background:var(--good); }
+  .t-weak .n { color:var(--weak); } .t-weak .track i { background:var(--weak); }
 
   .body { flex:1; min-width:0; }
+  .titlerow { display:flex; align-items:center; gap:9px; }
   .title { font-weight:600; font-size:15px; }
+  .tag { font-family:var(--mono); font-size:10px; letter-spacing:.11em; text-transform:uppercase; font-weight:600; padding:2px 7px; border-radius:5px; white-space:nowrap; }
+  .r-india { color:var(--strong); background:rgba(70,209,158,.14); }
+  .r-remote { color:var(--good); background:rgba(236,193,88,.13); }
+  .r-foreign { color:var(--foreign); background:rgba(240,120,127,.12); }
   .meta { color:var(--muted); font-size:13px; margin:2px 0 5px; font-family:var(--mono); letter-spacing:.01em; }
   .reason { color:#aeb5c4; font-size:13px; }
-  .apply {
-    flex:0 0 auto; font-size:12px; font-weight:600; font-family:var(--mono);
-    letter-spacing:.06em; text-transform:uppercase; text-decoration:none;
-    color:var(--accent); border:1px solid var(--line); background:var(--surface);
-    border-radius:8px; padding:9px 14px; white-space:nowrap;
-  }
+  .apply { flex:0 0 auto; font-size:12px; font-weight:600; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase;
+    text-decoration:none; color:var(--accent); border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:9px 14px; white-space:nowrap; }
   .apply:hover { border-color:var(--accent); background:var(--surface-2); }
   .apply:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 
@@ -102,20 +76,12 @@
   .empty b { color:var(--text); font-weight:600; }
   footer { margin-top:34px; color:var(--faint); font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; }
 
-  @media (max-width:560px) {
-    .readout { gap:22px; }
-    .apply { padding:8px 10px; }
-    .row { gap:12px; }
-  }
-  @media (prefers-reduced-motion:no-preference) {
-    .row { animation:rise .3s ease both; }
-    @keyframes rise { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
-  }
+  @media (max-width:560px){ .readout{gap:20px} .apply{padding:8px 10px} .row{gap:12px} }
+  @media (prefers-reduced-motion:no-preference){ .row{animation:rise .3s ease both} @keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}} }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header class="top">
     <p class="eyebrow">Fit scoring · live from jobs.db</p>
     <h1>Your matches, <span class="thin">ranked by fit</span></h1>
@@ -124,6 +90,12 @@
 
   <div class="bar-controls">
     <input id="q" class="field" type="text" placeholder="Search title or company" autocomplete="off">
+    <select id="region" class="field">
+      <option value="">All regions</option>
+      <option value="india">India</option>
+      <option value="remote">Remote</option>
+      <option value="foreign">Foreign</option>
+    </select>
     <select id="src" class="field"><option value="">All sources</option></select>
     <select id="sort" class="field">
       <option value="score">Sort: fit</option>
@@ -143,39 +115,47 @@
   const el = id => document.getElementById(id);
   const esc = t => (t ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
   const tierOf = s => s >= 75 ? "strong" : s >= 55 ? "good" : "weak";
+
+  const IN_RE = /\b(india|bengaluru|bangalore|mumbai|delhi|hyderabad|pune|chennai|gurgaon|gurugram|noida|kolkata|ahmedabad|indore|jaipur)\b/i;
+  const FOREIGN_RE = /\b(united states|u\.?s\.?a?|america|canada|united kingdom|u\.?k\.?|england|ireland|germany|poland|netherlands|france|spain|portugal|europe|emea|singapore|dubai|uae|australia|japan|mexico|brazil|new york|san francisco|seattle|chicago|austin|london|berlin|toronto|amsterdam|dublin)\b/i;
+  function region(loc){
+    if (!loc) return "remote";
+    if (IN_RE.test(loc)) return "india";
+    if (/remote/i.test(loc) && !FOREIGN_RE.test(loc)) return "remote";
+    if (FOREIGN_RE.test(loc)) return "foreign";
+    return "remote";
+  }
+  const REGION_LABEL = { india:"India", remote:"Remote", foreign:"Foreign" };
+
   const TIERS = [
     { key:"strong", name:"Strong",       note:"75+"   },
     { key:"good",   name:"Worth a look", note:"55\u201374" },
     { key:"weak",   name:"Long shots",   note:"<55"   },
   ];
-
-  function median(nums){
-    if(!nums.length) return 0;
-    const a=[...nums].sort((x,y)=>x-y), m=a.length>>1;
-    return a.length%2 ? a[m] : Math.round((a[m-1]+a[m])/2);
-  }
+  function median(nums){ if(!nums.length) return 0; const a=[...nums].sort((x,y)=>x-y),m=a.length>>1; return a.length%2?a[m]:Math.round((a[m-1]+a[m])/2); }
 
   function drawReadout(){
     const scores = ALL.map(t=>t.score);
+    const india = ALL.filter(t=>t._region==="india").length;
     const strong = scores.filter(s=>s>=75).length;
     const top = scores.length ? Math.max(...scores) : 0;
-    const med = median(scores);
     el("readout").innerHTML = `
       <div class="stat"><b>${ALL.length}</b><span>Scored</span></div>
-      <div class="stat hi"><b>${strong}</b><span>Strong</span></div>
+      <div class="stat hi"><b>${india}</b><span>India</span></div>
+      <div class="stat"><b>${strong}</b><span>Strong</span></div>
       <div class="stat"><b>${top}</b><span>Top fit</span></div>
-      <div class="stat"><b>${med}</b><span>Median</span></div>`;
+      <div class="stat"><b>${median(scores)}</b><span>Median</span></div>`;
   }
 
   function rowHTML(t){
     const cls = "t-" + tierOf(t.score);
     return `<div class="row ${cls}">
-      <div class="fit">
-        <div class="n">${t.score}</div>
-        <div class="track"><i style="width:${Math.max(4,t.score)}%"></i></div>
-      </div>
+      <div class="fit"><div class="n">${t.score}</div><div class="track"><i style="width:${Math.max(4,t.score)}%"></i></div></div>
       <div class="body">
-        <div class="title">${esc(t.title)}</div>
+        <div class="titlerow">
+          <span class="title">${esc(t.title)}</span>
+          <span class="tag r-${t._region}">${REGION_LABEL[t._region]}</span>
+        </div>
         <div class="meta">${esc(t.company)}${t.location ? " · " + esc(t.location) : ""} · ${esc(t.source)}</div>
         <div class="reason">${esc(t.reasons)}</div>
       </div>
@@ -187,11 +167,13 @@
     const q = el("q").value.trim().toLowerCase();
     const min = +el("min").value;
     const src = el("src").value;
+    const reg = el("region").value;
     const sort = el("sort").value;
 
     let rows = ALL.filter(t =>
       t.score >= min &&
       (!src || t.source === src) &&
+      (!reg || t._region === reg) &&
       (!q || (t.title + " " + t.company).toLowerCase().includes(q)));
 
     if (sort === "company") rows.sort((a,b)=> a.company.localeCompare(b.company) || b.score-a.score);
@@ -204,15 +186,11 @@
       el("list").innerHTML = `<div class="empty"><b>Nothing here yet.</b><br>Loosen the filters, or score more jobs to fill the shortlist.</div>`;
       return;
     }
-
     if (sort === "score"){
       el("list").innerHTML = TIERS.map(g => {
         const items = rows.filter(t => tierOf(t.score) === g.key);
         if (!items.length) return "";
-        return `<div class="group t-${g.key}">
-                  <span class="g-name">${g.name}</span><div class="g-rule"></div>
-                  <span class="g-count">${g.note} · ${items.length}</span>
-                </div>` + items.map(rowHTML).join("");
+        return `<div class="group t-${g.key}"><span class="g-name">${g.name}</span><div class="g-rule"></div><span class="g-count">${g.note} · ${items.length}</span></div>` + items.map(rowHTML).join("");
       }).join("");
     } else {
       el("list").innerHTML = rows.map(rowHTML).join("");
@@ -222,16 +200,17 @@
   async function load(){
     const res = await fetch("/api/targets");
     ALL = await res.json();
+    ALL.forEach(t => t._region = region(t.location));
     const sources = [...new Set(ALL.map(t=>t.source).filter(Boolean))].sort();
-    el("src").innerHTML = '<option value="">All sources</option>' +
-      sources.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
-    el("foot").textContent = `Reads live from jobs.db — rescore anytime and refresh.`;
+    el("src").innerHTML = '<option value="">All sources</option>' + sources.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    el("foot").textContent = "Reads live from jobs.db — rescore anytime and refresh.";
     drawReadout();
     render();
   }
 
   el("q").addEventListener("input", render);
   el("src").addEventListener("change", render);
+  el("region").addEventListener("change", render);
   el("sort").addEventListener("change", render);
   el("min").addEventListener("input", ()=>{ el("minOut").textContent = el("min").value; render(); });
 

@@ -1,0 +1,28 @@
+# Indian companies — candidates for the pipeline (martech / data / fintech / SaaS).
+# Run through the importer with --check; it keeps the live ones and drops the rest.
+# Slugs are best-effort guesses; a 404 just means the slug differs or they're not
+# on that ATS. To fix one: open the company's careers page and copy the real slug.
+
+# --- martech / AdTech (your domain) ---
+https://boards.greenhouse.io/moengage
+https://boards.greenhouse.io/clevertap
+https://boards.greenhouse.io/sprinklr
+https://boards.greenhouse.io/netcore
+
+# --- data / SaaS / product ---
+https://boards.greenhouse.io/postman
+https://boards.greenhouse.io/browserstack
+https://boards.greenhouse.io/chargebee
+https://boards.greenhouse.io/hasura
+https://boards.greenhouse.io/whatfix
+https://boards.greenhouse.io/innovaccer
+https://boards.greenhouse.io/uniphore
+https://jobs.lever.co/atlan
+
+# --- fintech / consumer (data-heavy) ---
+https://jobs.lever.co/razorpay
+https://jobs.lever.co/groww
+https://jobs.lever.co/meesho
+https://jobs.lever.co/sharechat
+https://jobs.lever.co/cred
+https://jobs.lever.co/slice

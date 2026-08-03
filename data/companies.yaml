@@ -447,3 +447,6 @@ companies:
   - name: Cygnify
     ats: ashby
     token: cygnify
+  - name: "Cred"
+    ats: lever
+    token: cred
