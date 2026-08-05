@@ -1,13 +1,13 @@
 """
-The scoring pipeline — the hybrid scorer, end to end.
+The scoring pipeline — the hybrid scorer, end to end, INCREMENTAL.
 
-    python -m jobspipeline.scoring.scorer            # score a capped batch
-    python -m jobspipeline.scoring.scorer --limit 0  # score ALL survivors
+    python -m jobspipeline.scoring.scorer            # score only NEW roles (cap 25)
+    python -m jobspipeline.scoring.scorer --limit 0  # score ALL new roles
+    python -m jobspipeline.scoring.scorer --rescore  # re-score everything (e.g. after a profile change)
 
-Runs the profile's hard filters over every stored job, then LLM-scores each
-survivor (Claude Haiku) for fit — weighing role, skills, domain, seniority, and
-required experience vs the candidate's — writes Targets, and prints the ranked
-shortlist.
+Runs the profile's hard filters over every stored job, then LLM-scores only the
+survivors that haven't been scored yet — so re-running never pays to score the
+same role twice. Writes Targets and prints the ranked shortlist.
 
 Needs ANTHROPIC_API_KEY set (in .env or your shell).
 """
@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-from ..core.storage import init_db, load_jobs, store_targets, top_targets
+from ..core.storage import init_db, load_jobs, scored_keys, store_targets, top_targets
 from ..schemas import Job
 from ..targets import Target, TargetStatus
 from .filters import hard_filter
@@ -66,7 +66,7 @@ def _job_text(job: Job) -> str:
         f"Company: {job.company}\n"
         f"Location: {loc}\n"
         f"Seniority (rough guess): {job.seniority.value}\n\n"
-        f"Description:\n{desc}"
+        f"Description:\n{desc or '(no description available)'}"
     )
 
 
@@ -98,7 +98,9 @@ def score_job(client: Anthropic, profile: Profile, job: Job) -> tuple[int, str]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=25,
-                        help="max survivors to LLM-score (0 = all)")
+                        help="max NEW survivors to score (0 = all)")
+    parser.add_argument("--rescore", action="store_true",
+                        help="re-score every survivor, even already-scored ones")
     args = parser.parse_args()
 
     if not os.getenv("ANTHROPIC_API_KEY"):
@@ -110,28 +112,38 @@ def main() -> None:
     jobs = load_jobs()
 
     survivors = [j for j in jobs if hard_filter(j, profile).passed]
-    to_score = survivors if args.limit == 0 else survivors[: args.limit]
-    print(f"{len(survivors)} survivors; scoring {len(to_score)} with {MODEL}\u2026\n")
+    already = set() if args.rescore else scored_keys()
+    pending = [j for j in survivors if j.dedup_key not in already]
+    skipped = len(survivors) - len(pending)
 
-    client = Anthropic()
+    to_score = pending if args.limit == 0 else pending[: args.limit]
+    print(f"{len(survivors)} survivors  ·  {skipped} already scored  ·  {len(pending)} new to score")
+    if to_score:
+        print(f"Scoring {len(to_score)} with {MODEL}\u2026\n")
+
     targets: list[Target] = []
-    for i, job in enumerate(to_score, 1):
-        try:
-            score, reasons = score_job(client, profile, job)
-        except Exception as e:
-            print(f"  !  {job.title[:40]:<40} scoring failed: {e}")
-            continue
-        targets.append(Target(
-            job=job,
-            status=TargetStatus.scored,
-            score=score,
-            score_reasons=reasons,
-            scored_at=datetime.now(timezone.utc),
-        ))
-        print(f"  [{i}/{len(to_score)}]  {score:>3}  {job.title[:42]:<42} {job.company}")
+    if to_score:
+        client = Anthropic()
+        for i, job in enumerate(to_score, 1):
+            try:
+                score, reasons = score_job(client, profile, job)
+            except Exception as e:
+                print(f"  !  {job.title[:40]:<40} scoring failed: {e}")
+                continue
+            targets.append(Target(
+                job=job,
+                status=TargetStatus.scored,
+                score=score,
+                score_reasons=reasons,
+                scored_at=datetime.now(timezone.utc),
+            ))
+            print(f"  [{i}/{len(to_score)}]  {score:>3}  {job.title[:42]:<42} {job.company}")
 
-    store_targets(targets)
-    print(f"\nStored {len(targets)} scored targets.")
+    if targets:
+        store_targets(targets)
+        print(f"\nStored {len(targets)} newly scored targets.")
+    else:
+        print("\nNothing new to score — your shortlist is up to date.")
 
     print("\n=== Your top matches ===")
     for rec in top_targets(20):

@@ -6,8 +6,7 @@ Two tables:
   - targets : one row per scored job, keyed by dedup_key (what WE decided)
 
 The domain objects (`Job`, `Target`) stay pure Pydantic; this module maps them
-to rows and rebuilds them on read. Target rows denormalize a few display fields
-so the shortlist and the future UI can query without a join.
+to rows and rebuilds them on read.
 """
 
 from __future__ import annotations
@@ -23,7 +22,6 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from ..schemas import Job
 from ..targets import Target
 
-# jobs.db lives at the project root (storage.py is at src/jobspipeline/core/)
 DB_PATH = Path(__file__).resolve().parents[3] / "jobs.db"
 engine = create_engine(f"sqlite:///{DB_PATH}")
 
@@ -31,10 +29,6 @@ engine = create_engine(f"sqlite:///{DB_PATH}")
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
-
-# --------------------------------------------------------------------------- #
-# Jobs                                                                          #
-# --------------------------------------------------------------------------- #
 
 class JobRecord(SQLModel, table=True):
     __tablename__ = "jobs"
@@ -52,10 +46,6 @@ class JobRecord(SQLModel, table=True):
     last_seen: datetime = Field(default_factory=_utcnow)
 
 
-# --------------------------------------------------------------------------- #
-# Targets (a job + our score/status)                                           #
-# --------------------------------------------------------------------------- #
-
 class TargetRecord(SQLModel, table=True):
     __tablename__ = "targets"
 
@@ -64,7 +54,6 @@ class TargetRecord(SQLModel, table=True):
     score: Optional[int] = Field(default=None, index=True)
     score_reasons: Optional[str] = Field(default=None)
     channel: str = Field(default="application")
-    # denormalized for the shortlist / UI (no join needed to display)
     title: str
     company: str = Field(index=True)
     location: Optional[str] = Field(default=None)
@@ -83,7 +72,6 @@ class StoreResult:
 
 
 def init_db() -> None:
-    """Create tables if they don't exist. Safe to call every run."""
     SQLModel.metadata.create_all(engine)
 
 
@@ -105,7 +93,6 @@ def _to_record(job: Job, now: datetime) -> JobRecord:
 
 
 def store_jobs(jobs: list[Job]) -> StoreResult:
-    """Upsert jobs by dedup_key. New ones inserted, known ones refreshed."""
     new = seen = 0
     now = _utcnow()
     with Session(engine) as session:
@@ -131,14 +118,21 @@ def store_jobs(jobs: list[Job]) -> StoreResult:
 
 
 def load_jobs() -> list[Job]:
-    """Read every stored job back into a Job domain object."""
     with Session(engine) as session:
         records = session.exec(select(JobRecord)).all()
     return [Job(**rec.data) for rec in records]
 
 
+def scored_keys() -> set[str]:
+    """dedup_keys that already have a score — so we never pay to score twice."""
+    with Session(engine) as session:
+        rows = session.exec(
+            select(TargetRecord.dedup_key).where(TargetRecord.status == "scored")
+        ).all()
+    return set(rows)
+
+
 def store_targets(targets: list[Target]) -> None:
-    """Upsert scored targets by dedup_key."""
     now = _utcnow()
     with Session(engine) as session:
         for t in targets:
@@ -163,7 +157,6 @@ def store_targets(targets: list[Target]) -> None:
 
 
 def top_targets(limit: int = 20) -> list[TargetRecord]:
-    """The highest-scoring targets — your shortlist."""
     with Session(engine) as session:
         stmt = (
             select(TargetRecord)
