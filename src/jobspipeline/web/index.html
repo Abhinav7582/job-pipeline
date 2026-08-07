@@ -50,13 +50,14 @@
 
   .row { display:flex; gap:18px; align-items:center; padding:14px 4px; border-bottom:1px solid var(--line); }
   .row:hover { background:var(--surface); }
-  .fit { flex:0 0 58px; text-align:right; }
-  .fit .n { font-size:23px; font-weight:600; line-height:1; }
-  .fit .track { height:3px; margin-top:7px; border-radius:2px; background:var(--line); overflow:hidden; }
+  .fit { flex:0 0 52px; text-align:right; }
+  /* score number is ALWAYS light for contrast; the bar carries the tier colour */
+  .fit .n { font-size:23px; font-weight:600; line-height:1; color:var(--text); }
+  .fit .track { height:4px; margin-top:7px; border-radius:2px; background:var(--line); overflow:hidden; }
   .fit .track i { display:block; height:100%; border-radius:2px; }
-  .t-strong .n,.t-strong .track i { color:var(--strong); background:var(--strong); }
-  .t-good .n { color:var(--good); } .t-good .track i { background:var(--good); }
-  .t-weak .n { color:var(--weak); } .t-weak .track i { background:var(--weak); }
+  .t-strong .track i { background:var(--strong); }
+  .t-good   .track i { background:var(--good); }
+  .t-weak   .track i { background:var(--weak); }
 
   .body { flex:1; min-width:0; }
   .titlerow { display:flex; align-items:center; gap:9px; }

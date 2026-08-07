@@ -36,10 +36,6 @@ companies:
     ats: lever
     token: binance
 
-  - name: Lever Demo
-    ats: lever
-    token: leverdemo
-
   - name: Shakepay
     ats: greenhouse
     token: shakepay

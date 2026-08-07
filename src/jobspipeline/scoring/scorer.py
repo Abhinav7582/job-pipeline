@@ -1,13 +1,13 @@
 """
 The scoring pipeline — the hybrid scorer, end to end, INCREMENTAL.
 
-    python -m jobspipeline.scoring.scorer            # score only NEW roles (cap 25)
-    python -m jobspipeline.scoring.scorer --limit 0  # score ALL new roles
-    python -m jobspipeline.scoring.scorer --rescore  # re-score everything (e.g. after a profile change)
+    uv run python -m jobspipeline.scoring.scorer            # score only NEW roles (cap 25)
+    uv run python -m jobspipeline.scoring.scorer --limit 0  # score ALL new roles
+    uv run python -m jobspipeline.scoring.scorer --rescore --limit 0  # re-score everything
 
 Runs the profile's hard filters over every stored job, then LLM-scores only the
-survivors that haven't been scored yet — so re-running never pays to score the
-same role twice. Writes Targets and prints the ranked shortlist.
+survivors that haven't been scored yet. Writes Targets and prints the ranked
+shortlist.
 
 Needs ANTHROPIC_API_KEY set (in .env or your shell).
 """
@@ -32,18 +32,42 @@ load_dotenv()
 
 MODEL = "claude-haiku-4-5-20251001"
 
+# {years} and {years_plus} are filled per-run from the profile.
 SYSTEM_PROMPT = """You are a precise job-fit scorer for one specific candidate.
-Given the candidate profile and a job posting, rate how well the job fits the
-candidate from 0 to 100, where 100 is an ideal fit.
+Score how well each job fits the candidate from 0 to 100.
 
-Weigh, in rough priority: role/function match, required skills vs the candidate's,
-domain overlap, seniority, and REQUIRED YEARS OF EXPERIENCE vs the candidate's.
-A role that clearly requires substantially more experience than the candidate has
-should score low even when skills match. Be discerning — most jobs are mediocre
-fits, so use the full range and reserve 80+ for genuinely strong matches.
+EXPERIENCE RULE (important):
+The candidate has {years} years of experience and performs at a strong, senior
+level for that tenure (billion-scale pipelines, real ownership — see the profile).
+Treat any role asking for up to about {years_plus} years as a FULL match on
+experience; do NOT lower the score for it, and do NOT reflexively penalize a role
+just because its title says "Senior". Only apply an experience penalty when a role
+clearly requires substantially more (roughly 6+ years) or is a genuine
+people-management / team-leadership role.
+
+FIT RUBRIC — use the FULL range and differentiate finely:
+  85-100  exceptional: function, tech stack, and domain all align; experience in range
+  70-84   strong: clearly a good fit with at most one minor gap
+  50-69   partial: relevant but with real gaps in domain, stack, or level
+  30-49   weak: some overlap but mostly off-target
+  0-29    poor: wrong function or wrong domain
+Do NOT cluster many roles on the same round number. If two roles differ in fit,
+give them different scores — vary within a band (e.g. 83, 79, 76, 71), never snap
+everything to 78 or 72.
+
+WEIGH, in priority: function/role match; tech-stack overlap (SQL, Python, PySpark,
+dbt, Airflow, Databricks, Snowflake); domain overlap (AdTech, data infrastructure,
+product/revenue analytics are the strongest); then experience per the rule above.
 
 Respond with ONLY a JSON object and nothing else:
-{"score": <integer 0-100>, "reasons": "<one sentence, 20 words max>"}"""
+{{"score": <integer 0-100>, "reasons": "<one sentence, 20 words max>"}}"""
+
+
+def _system(profile: Profile) -> str:
+    return SYSTEM_PROMPT.format(
+        years=profile.years_experience,
+        years_plus=profile.years_experience + 2,
+    )
 
 
 def _profile_text(p: Profile) -> str:
@@ -78,11 +102,11 @@ def _extract_json(text: str) -> dict:
     return json.loads(text[start : end + 1])
 
 
-def score_job(client: Anthropic, profile: Profile, job: Job) -> tuple[int, str]:
+def score_job(client: Anthropic, system: str, profile: Profile, job: Job) -> tuple[int, str]:
     message = client.messages.create(
         model=MODEL,
         max_tokens=150,
-        system=SYSTEM_PROMPT,
+        system=system,
         messages=[{
             "role": "user",
             "content": f"CANDIDATE PROFILE:\n{_profile_text(profile)}\n\n"
@@ -97,10 +121,8 @@ def score_job(client: Anthropic, profile: Profile, job: Job) -> tuple[int, str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=25,
-                        help="max NEW survivors to score (0 = all)")
-    parser.add_argument("--rescore", action="store_true",
-                        help="re-score every survivor, even already-scored ones")
+    parser.add_argument("--limit", type=int, default=25, help="max NEW survivors to score (0 = all)")
+    parser.add_argument("--rescore", action="store_true", help="re-score every survivor, even already-scored")
     args = parser.parse_args()
 
     if not os.getenv("ANTHROPIC_API_KEY"):
@@ -124,9 +146,10 @@ def main() -> None:
     targets: list[Target] = []
     if to_score:
         client = Anthropic()
+        system = _system(profile)
         for i, job in enumerate(to_score, 1):
             try:
-                score, reasons = score_job(client, profile, job)
+                score, reasons = score_job(client, system, profile, job)
             except Exception as e:
                 print(f"  !  {job.title[:40]:<40} scoring failed: {e}")
                 continue
